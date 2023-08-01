@@ -58,7 +58,7 @@ export default {
         if (res.data.success) {
           const { token, expired } = res.data;
           document.cookie = `loginToken=${token}; expires=${new Date(expired)}`;
-          this.$router.push("/dashboard");
+          this.$router.push("/dashboard/productlist");
         } else {
           alert(`${res.data.message}`);
         }

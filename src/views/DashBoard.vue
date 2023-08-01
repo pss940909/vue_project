@@ -1,9 +1,19 @@
-<template>dashboard</template>
+<template>
+  <dash-nav></dash-nav>
+  <div class="container-fluid">
+    <router-view />
+  </div>
+</template>
 
 <script>
+import DashNav from "../components/DashNav.vue";
+
 export default {
   data() {
     return {};
+  },
+  components: {
+    DashNav,
   },
   created() {
     // 取出存入的token
