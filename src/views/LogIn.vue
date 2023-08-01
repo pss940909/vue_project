@@ -55,7 +55,13 @@ export default {
     login() {
       const url = `${process.env.VUE_APP_API}/admin/signin`;
       this.axios.post(url, this.user).then((res) => {
-        console.log(res.data);
+        if (res.data.success) {
+          const { token, expired } = res.data;
+          document.cookie = `loginToken=${token}; expires=${new Date(expired)}`;
+          this.$router.push("/dashboard");
+        } else {
+          alert(`${res.data.message}`);
+        }
       });
     },
   },
