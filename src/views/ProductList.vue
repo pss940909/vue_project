@@ -1,4 +1,5 @@
 <template>
+  <vue-loading :active="isLoading"></vue-loading>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -32,6 +33,10 @@
 
 <script>
 export default {
-  data() {},
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
 };
 </script>

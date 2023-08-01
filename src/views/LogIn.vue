@@ -1,4 +1,5 @@
 <template>
+  <vue-loading :active="isLoading"></vue-loading>
   <div class="container mt-5">
     <form class="row justify-content-center">
       <div class="col-md-6">
@@ -45,6 +46,7 @@
 export default {
   data() {
     return {
+      isLoading: false,
       user: {
         username: "",
         password: "",
@@ -53,13 +55,16 @@ export default {
   },
   methods: {
     login() {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}/admin/signin`;
       this.axios.post(url, this.user).then((res) => {
         if (res.data.success) {
+          this.isLoading = false;
           const { token, expired } = res.data;
           document.cookie = `loginToken=${token}; expires=${new Date(expired)}`;
           this.$router.push("/dashboard/productlist");
         } else {
+          this.isLoading = false;
           alert(`${res.data.message}`);
         }
       });

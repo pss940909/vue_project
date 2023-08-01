@@ -1,4 +1,5 @@
 <template>
+  <vue-loading :active="isLoading"></vue-loading>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Navbar</a>
@@ -35,14 +36,16 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      isLoading: false,
+    };
   },
   methods: {
     logout() {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}/logout`;
-      console.log(url);
       this.axios.post(url).then((res) => {
-        console.log(res.data);
+        this.isLoading = false;
         if (res.data.success) {
           this.$router.push("/login");
         }

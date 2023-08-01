@@ -10,7 +10,9 @@ import DashNav from "../components/DashNav.vue";
 
 export default {
   data() {
-    return {};
+    return {
+      isLoading: true,
+    };
   },
   components: {
     DashNav,
