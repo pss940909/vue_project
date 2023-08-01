@@ -1,5 +1,8 @@
 <template>
   <vue-loading :active="isLoading"></vue-loading>
+  <div class="text-end mt-4">
+    <button class="btn btn-primary" @click="showProductModal">新增產品</button>
+  </div>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -30,15 +33,19 @@
       </tr>
     </tbody>
   </table>
+  <product-modal ref="productModal" :product="tempProduct"></product-modal>
 </template>
 
 <script>
+import ProductModal from "../components/ProductModal.vue";
 export default {
+  components: { ProductModal },
   data() {
     return {
       isLoading: false,
       products: [],
       pagination: {},
+      tempProduct: {},
     };
   },
   methods: {
@@ -51,6 +58,10 @@ export default {
           this.pagination = res.data.pagination;
         }
       });
+    },
+    showProductModal() {
+      this.$refs.productModal.showModal();
+      this.tempProduct = {};
     },
   },
   created() {
