@@ -31,25 +31,51 @@
                   >或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control" />
+                <input
+                  type="file"
+                  id="customFile"
+                  class="form-control"
+                  ref="fileInput"
+                  name="file-to-upload"
+                  @change="uploadFile"
+                />
               </div>
-              <img class="img-fluid" alt="" />
+              <img
+                class="img-fluid"
+                :src="tempProduct.imageUrl"
+                :alt="tempProduct.title"
+              />
               <!-- 延伸技巧，多圖 -->
-              <div class="mt-5">
-                <div class="mb-3 input-group">
+              <div class="mt-5" v-if="tempProduct.imagesUrl">
+                <div
+                  class="mb-3 input-group"
+                  v-for="(imageUrl, key) in tempProduct.imagesUrl"
+                  :key="key"
+                >
                   <input
                     type="url"
                     class="form-control form-control"
                     placeholder="請輸入連結"
+                    v-model="tempProduct.imagesUrl[key]"
                   />
-                  <button type="button" class="btn btn-outline-danger">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    @click="tempProduct.imagesUrl.splice(key, 1)"
+                  >
                     移除
                   </button>
                 </div>
-                <div>
-                  <button class="btn btn-outline-primary btn-sm d-block w-100">
+                <div v-if="canAddMoreImages">
+                  <button
+                    class="btn btn-outline-primary btn-sm d-block w-100"
+                    @click="tempProduct.imagesUrl.push('')"
+                  >
                     新增圖片
                   </button>
+                </div>
+                <div v-else-if="this.tempProduct.imagesUrl.length == 5">
+                  <small class="text-danger">最多限上傳6張照片</small>
                 </div>
               </div>
             </div>
@@ -216,34 +242,53 @@ export default {
       type: Boolean,
     },
   },
+  computed: {
+    canAddMoreImages() {
+      if (this.tempProduct.imagesUrl.length == 0) {
+        return true;
+      } else if (this.tempProduct.imagesUrl.length == 5) {
+        return false;
+      } else if (
+        this.tempProduct.imagesUrl[this.tempProduct.imagesUrl.length - 1]
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   watch: {
     product() {
       this.tempProduct = this.product;
-    },
-    isNew() {
-      if (!this.isNew) {
-        this.errors = {
-          title: false,
-          category: false,
-          unit: false,
-          origin_price: false,
-          price: false,
-        };
+      if (!this.tempProduct.imagesUrl) {
+        this.tempProduct.imagesUrl = [];
       }
+    },
+    isNew: {
+      handler(newVal) {
+        if (!newVal) {
+          this.errors = {
+            title: false,
+            category: false,
+            unit: false,
+            origin_price: false,
+            price: false,
+          };
+        } else {
+          this.errors = {
+            title: null,
+            category: null,
+            unit: null,
+            origin_price: null,
+            price: null,
+          };
+        }
+      },
+      immediate: true, // 立即执行一次 watch 侦听器
     },
     errors: {
       handler(newVal, oldVal) {
         console.log(newVal, oldVal);
-        //   console.log(
-        //     "Object.values(this.errors)",
-        //     Object.values(this.errors).length
-        //   );
-        //   console.log(Object.values(this.errors).length === 0);
-        //   if (Object.values(this.errors).every((error) => error == false)) {
-        //     console.log("通過");
-        //   } else {
-        //     console.log("不通過");
-        //   }
       },
       immediate: true, // 立即执行一次 watch 侦听器
       deep: true, // 开启深度监听
@@ -256,15 +301,6 @@ export default {
     hideModal() {
       this.modal.hide();
     },
-    resetError() {
-      this.errors = {
-        title: null,
-        category: null,
-        unit: null,
-        origin_price: null,
-        price: null,
-      };
-    },
     updateProduct() {
       if (Object.values(this.errors).every((error) => error == false)) {
         this.$emit("updateProduct", this.tempProduct);
@@ -272,13 +308,26 @@ export default {
         alert("表單未完整填寫，請重新確認");
       }
     },
-    // 驗證必填
+    // 驗證必填欄位
     checkRequired(field) {
       if (!this.tempProduct[field]) {
         this.errors[field] = true;
       } else {
         this.errors[field] = false;
       }
+    },
+    uploadFile() {
+      console.dir(this.$refs.fileInput.files[0].name);
+      const uploadedFile = this.$refs.fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file-to-upload", uploadedFile);
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/upload`;
+      this.axios.post(url, formData).then((res) => {
+        console.log(res.data.imageUrl);
+        if (res.data.success) {
+          this.tempProduct.imageUrl = res.data.imageUrl;
+        }
+      });
     },
   },
   mounted() {
