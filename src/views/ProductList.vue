@@ -34,7 +34,12 @@
             >
               編輯
             </button>
-            <button class="btn btn-outline-danger btn-sm">刪除</button>
+            <button
+              class="btn btn-outline-danger btn-sm"
+              @click="showDelModal(product)"
+            >
+              刪除
+            </button>
           </div>
         </td>
       </tr>
@@ -46,12 +51,18 @@
     :isNew="isNew"
     @updateProduct="updateProduct"
   ></product-modal>
+  <del-modal
+    ref="delModal"
+    :product="tempProduct"
+    @delProduct="delProduct"
+  ></del-modal>
 </template>
 
 <script>
 import ProductModal from "../components/ProductModal.vue";
+import DelModal from "../components/DelModal.vue";
 export default {
-  components: { ProductModal },
+  components: { ProductModal, DelModal },
   data() {
     return {
       isLoading: false,
@@ -83,6 +94,10 @@ export default {
         this.tempProduct = product;
       }
     },
+    showDelModal(product) {
+      this.tempProduct = product;
+      this.$refs.delModal.showModal();
+    },
     updateProduct(product) {
       this.tempProduct = product;
       if (this.isNew) {
@@ -105,6 +120,16 @@ export default {
           this.getProducts();
         });
       }
+    },
+    delProduct(product) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${product.id}`;
+      this.axios.delete(url).then((res) => {
+        console.log(res.data);
+        if (res.data.success) {
+          this.$refs.delModal.hideModal();
+          this.getProducts();
+        }
+      });
     },
   },
   created() {

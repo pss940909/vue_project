@@ -17,7 +17,7 @@
           <div class="row">
             <div class="col-sm-4">
               <div class="mb-3">
-                <label for="image" class="form-label">輸入圖片網址</label>
+                <label for="image" class="form-label">輸入主要圖片網址</label>
                 <input
                   type="text"
                   class="form-control"
@@ -28,7 +28,7 @@
               </div>
               <div class="mb-3">
                 <label for="customFile" class="form-label"
-                  >或 上傳圖片
+                  >或 上傳主要圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
                 <input
@@ -45,7 +45,6 @@
                 :src="tempProduct.imageUrl"
                 :alt="tempProduct.title"
               />
-              <!-- 延伸技巧，多圖 -->
               <div class="mt-5" v-if="tempProduct.imagesUrl">
                 <div
                   class="mb-3 input-group"
@@ -215,7 +214,7 @@
 </template>
 
 <script>
-import { Modal } from "bootstrap";
+import modalMixin from "@/mixins/modalMixin";
 
 export default {
   data() {
@@ -231,6 +230,7 @@ export default {
       },
     };
   },
+  mixins: [modalMixin],
   props: {
     product: {
       type: Object,
@@ -295,12 +295,6 @@ export default {
     },
   },
   methods: {
-    showModal() {
-      this.modal.show();
-    },
-    hideModal() {
-      this.modal.hide();
-    },
     updateProduct() {
       if (Object.values(this.errors).every((error) => error == false)) {
         this.$emit("updateProduct", this.tempProduct);
@@ -329,9 +323,6 @@ export default {
         }
       });
     },
-  },
-  mounted() {
-    this.modal = new Modal(this.$refs.modal);
   },
 };
 </script>
