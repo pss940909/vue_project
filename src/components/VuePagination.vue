@@ -4,7 +4,7 @@
       <li
         class="page-item"
         :class="{ disabled: !pages.has_pre }"
-        @click="changePage(pages.current_page - 1)"
+        @click.prevent="changePage(pages.current_page - 1)"
       >
         <a class="page-link" aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
@@ -15,14 +15,14 @@
         v-for="page in pages.total_pages"
         :key="page"
         :class="{ active: pages.current_page == page }"
-        @click="changePage(page)"
+        @click.prevent="changePage(page)"
       >
         <a class="page-link">{{ page }}</a>
       </li>
       <li
         class="page-item"
         :class="{ disabled: !pages.has_next }"
-        @click="changePage(pages.current_page + 1)"
+        @click.prevent="changePage(pages.current_page + 1)"
       >
         <a class="page-link" aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
