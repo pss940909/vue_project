@@ -1,7 +1,9 @@
 <template>
   <vue-loading :active="isLoading"></vue-loading>
   <div class="text-end mt-4">
-    <button class="btn btn-primary" @click="showProductModal">新增產品</button>
+    <button class="btn btn-primary" @click="showProductModal(true)">
+      新增產品
+    </button>
   </div>
   <table class="table mt-4">
     <thead>
@@ -26,7 +28,12 @@
         </td>
         <td>
           <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">編輯</button>
+            <button
+              class="btn btn-outline-primary btn-sm"
+              @click="showProductModal(false, product)"
+            >
+              編輯
+            </button>
             <button class="btn btn-outline-danger btn-sm">刪除</button>
           </div>
         </td>
@@ -36,6 +43,7 @@
   <product-modal
     ref="productModal"
     :product="tempProduct"
+    :isNew="isNew"
     @updateProduct="updateProduct"
   ></product-modal>
 </template>
@@ -50,6 +58,7 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
+      isNew: true,
     };
   },
   methods: {
@@ -65,23 +74,37 @@ export default {
         }
       });
     },
-    showProductModal() {
+    showProductModal(isNew, product) {
       this.$refs.productModal.showModal();
-      this.tempProduct = {};
+      this.isNew = isNew;
+      if (isNew) {
+        this.tempProduct = {};
+      } else {
+        this.tempProduct = product;
+      }
     },
     updateProduct(product) {
       this.tempProduct = product;
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
-      this.axios
-        .post(url, {
-          data: product,
-        })
-        .then((res) => {
-          if (res.data.success) {
-            this.$refs.productModal.hideModal();
-            this.getProducts();
-          }
+      if (this.isNew) {
+        const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
+        this.axios
+          .post(url, {
+            data: this.tempProduct,
+          })
+          .then((res) => {
+            if (res.data.success) {
+              this.$refs.productModal.hideModal();
+              this.getProducts();
+            }
+          });
+      } else {
+        const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+        this.axios.put(url, { data: this.tempProduct }).then((res) => {
+          console.log(res.data);
+          this.$refs.productModal.hideModal();
+          this.getProducts();
         });
+      }
     },
   },
   created() {

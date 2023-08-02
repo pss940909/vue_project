@@ -197,13 +197,12 @@ export default {
       modal: {},
       tempProduct: {},
       errors: {
-        //   title: true,
-        //   category: true,
-        //   unit: true,
-        //   origin_price: true,
-        //   price: true,
+        title: null,
+        category: null,
+        unit: null,
+        origin_price: null,
+        price: null,
       },
-      isRight: true,
     };
   },
   props: {
@@ -213,24 +212,38 @@ export default {
         return {};
       },
     },
+    isNew: {
+      type: Boolean,
+    },
   },
   watch: {
     product() {
       this.tempProduct = this.product;
     },
+    isNew() {
+      if (!this.isNew) {
+        this.errors = {
+          title: false,
+          category: false,
+          unit: false,
+          origin_price: false,
+          price: false,
+        };
+      }
+    },
     errors: {
       handler(newVal, oldVal) {
         console.log(newVal, oldVal);
-        console.log(
-          "Object.values(this.errors)",
-          Object.values(this.errors).length
-        );
-        console.log(Object.values(this.errors).length === 0);
-        if (Object.values(this.errors).every((error) => error == false)) {
-          console.log("通過");
-        } else {
-          console.log("不通過");
-        }
+        //   console.log(
+        //     "Object.values(this.errors)",
+        //     Object.values(this.errors).length
+        //   );
+        //   console.log(Object.values(this.errors).length === 0);
+        //   if (Object.values(this.errors).every((error) => error == false)) {
+        //     console.log("通過");
+        //   } else {
+        //     console.log("不通過");
+        //   }
       },
       immediate: true, // 立即执行一次 watch 侦听器
       deep: true, // 开启深度监听
@@ -243,15 +256,18 @@ export default {
     hideModal() {
       this.modal.hide();
     },
+    resetError() {
+      this.errors = {
+        title: null,
+        category: null,
+        unit: null,
+        origin_price: null,
+        price: null,
+      };
+    },
     updateProduct() {
-      // 確認必填欄位均已填寫
-      if (Object.values(this.errors).length < 5) {
-        alert("表單未完整填寫，請重新確認");
-      }
-      // 再次確認表單是否完整填寫 => 沒有errors
       if (Object.values(this.errors).every((error) => error == false)) {
         this.$emit("updateProduct", this.tempProduct);
-        this.errors = {};
       } else {
         alert("表單未完整填寫，請重新確認");
       }
