@@ -1,5 +1,4 @@
 <template>
-  <!-- 請同學自行新增 v-model -->
   <div class="modal" ref="modal">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content border-0">
@@ -63,7 +62,11 @@
                   id="title"
                   placeholder="請輸入標題"
                   v-model.trim="tempProduct.title"
+                  @blur="checkRequired('title')"
                 />
+                <small v-if="errors.title" class="text-danger"
+                  >標題為必填的項目</small
+                >
               </div>
 
               <div class="row gx-2">
@@ -75,7 +78,11 @@
                     id="category"
                     placeholder="請輸入分類"
                     v-model.trim="tempProduct.category"
+                    @blur="checkRequired('category')"
                   />
+                  <small v-if="errors.category" class="text-danger"
+                    >分類為必填的項目</small
+                  >
                 </div>
                 <div class="mb-3 col-md-6">
                   <label for="price" class="form-label">單位</label>
@@ -85,7 +92,11 @@
                     id="unit"
                     placeholder="請輸入單位"
                     v-model.trim="tempProduct.unit"
+                    @blur="checkRequired('unit')"
                   />
+                  <small v-if="errors.unit" class="text-danger"
+                    >單位為必填的項目</small
+                  >
                 </div>
               </div>
 
@@ -98,7 +109,11 @@
                     id="origin_price"
                     placeholder="請輸入原價"
                     v-model.number="tempProduct.origin_price"
+                    @blur="checkRequired('origin_price')"
                   />
+                  <small v-if="errors.origin_price" class="text-danger"
+                    >原價為必填的項目</small
+                  >
                 </div>
                 <div class="mb-3 col-md-6">
                   <label for="price" class="form-label">售價</label>
@@ -108,7 +123,11 @@
                     id="price"
                     placeholder="請輸入售價"
                     v-model.number="tempProduct.price"
+                    @blur="checkRequired('price')"
                   />
+                  <small v-if="errors.price" class="text-danger"
+                    >售價為必填的項目</small
+                  >
                 </div>
               </div>
               <hr />
@@ -153,14 +172,16 @@
         </div>
         <div class="modal-footer">
           <button
-            type="button"
+            type="submit"
             class="btn btn-outline-secondary"
             data-bs-dismiss="modal"
-            @click="hideModal"
+            @click.prevent="hideModal"
           >
             取消
           </button>
-          <button type="button" class="btn btn-primary">確認</button>
+          <button type="button" class="btn btn-primary" @click="updateProduct">
+            確認
+          </button>
         </div>
       </div>
     </div>
@@ -175,6 +196,14 @@ export default {
     return {
       modal: {},
       tempProduct: {},
+      errors: {
+        //   title: true,
+        //   category: true,
+        //   unit: true,
+        //   origin_price: true,
+        //   price: true,
+      },
+      isRight: true,
     };
   },
   props: {
@@ -189,6 +218,23 @@ export default {
     product() {
       this.tempProduct = this.product;
     },
+    errors: {
+      handler(newVal, oldVal) {
+        console.log(newVal, oldVal);
+        console.log(
+          "Object.values(this.errors)",
+          Object.values(this.errors).length
+        );
+        console.log(Object.values(this.errors).length === 0);
+        if (Object.values(this.errors).every((error) => error == false)) {
+          console.log("通過");
+        } else {
+          console.log("不通過");
+        }
+      },
+      immediate: true, // 立即执行一次 watch 侦听器
+      deep: true, // 开启深度监听
+    },
   },
   methods: {
     showModal() {
@@ -197,7 +243,27 @@ export default {
     hideModal() {
       this.modal.hide();
     },
-    updateProduct() {},
+    updateProduct() {
+      // 確認必填欄位均已填寫
+      if (Object.values(this.errors).length < 5) {
+        alert("表單未完整填寫，請重新確認");
+      }
+      // 再次確認表單是否完整填寫 => 沒有errors
+      if (Object.values(this.errors).every((error) => error == false)) {
+        this.$emit("updateProduct", this.tempProduct);
+        this.errors = {};
+      } else {
+        alert("表單未完整填寫，請重新確認");
+      }
+    },
+    // 驗證必填
+    checkRequired(field) {
+      if (!this.tempProduct[field]) {
+        this.errors[field] = true;
+      } else {
+        this.errors[field] = false;
+      }
+    },
   },
   mounted() {
     this.modal = new Modal(this.$refs.modal);

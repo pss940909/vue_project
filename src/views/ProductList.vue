@@ -33,7 +33,11 @@
       </tr>
     </tbody>
   </table>
-  <product-modal ref="productModal" :product="tempProduct"></product-modal>
+  <product-modal
+    ref="productModal"
+    :product="tempProduct"
+    @updateProduct="updateProduct"
+  ></product-modal>
 </template>
 
 <script>
@@ -50,10 +54,12 @@ export default {
   },
   methods: {
     getProducts() {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`;
       this.axios.get(url).then((res) => {
         console.log(res.data);
         if (res.data.success) {
+          this.isLoading = false;
           this.products = res.data.products;
           this.pagination = res.data.pagination;
         }
@@ -62,6 +68,20 @@ export default {
     showProductModal() {
       this.$refs.productModal.showModal();
       this.tempProduct = {};
+    },
+    updateProduct(product) {
+      this.tempProduct = product;
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product`;
+      this.axios
+        .post(url, {
+          data: product,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.$refs.productModal.hideModal();
+            this.getProducts();
+          }
+        });
     },
   },
   created() {
