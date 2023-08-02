@@ -72,6 +72,7 @@ export default {
       isNew: true,
     };
   },
+  inject: ["emitter"],
   methods: {
     getProducts() {
       this.isLoading = true;
@@ -109,7 +110,17 @@ export default {
           .then((res) => {
             if (res.data.success) {
               this.$refs.productModal.hideModal();
+              this.emitter.emit("push-message", {
+                style: "success",
+                title: "更新成功",
+              });
               this.getProducts();
+            } else {
+              this.emitter.emit("push-message", {
+                style: "danger",
+                title: "更新失敗",
+                content: res.data.message.join("、"),
+              });
             }
           });
       } else {
