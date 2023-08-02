@@ -45,6 +45,13 @@
       </tr>
     </tbody>
   </table>
+  <div class="d-flex justify-content-center">
+    <vue-pagination
+      :pages="pagination"
+      @changePage="getProducts"
+    ></vue-pagination>
+  </div>
+
   <product-modal
     ref="productModal"
     :product="tempProduct"
@@ -61,8 +68,10 @@
 <script>
 import ProductModal from "../components/ProductModal.vue";
 import DelModal from "../components/DelModal.vue";
+import VuePagination from "@/components/VuePagination.vue";
+
 export default {
-  components: { ProductModal, DelModal },
+  components: { ProductModal, DelModal, VuePagination },
   data() {
     return {
       isLoading: false,
@@ -74,9 +83,9 @@ export default {
   },
   inject: ["emitter"],
   methods: {
-    getProducts() {
+    getProducts(page = 1) {
       this.isLoading = true;
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`;
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
       this.axios.get(url).then((res) => {
         console.log(res.data);
         if (res.data.success) {
