@@ -122,6 +122,8 @@ export default {
         this.tempCoupon = newVal;
         this.tempCoupon.due_date = this.$filters.date(newVal.due_date);
       },
+      immediate: true,
+      deep: true,
     },
   },
   computed: {
