@@ -12,7 +12,8 @@
       <div class="modal-content">
         <div class="modal-header bg-danger text-white">
           <h5 class="modal-title" id="exampleModalLabel">
-            確定刪除{{ product.title }}?
+            確定刪除
+            {{ coupon.title }} - 優惠卷?
           </h5>
           <button
             type="button"
@@ -22,7 +23,9 @@
           ></button>
         </div>
         <div class="modal-body">
-          確定要刪除{{ product.title }}嗎？(刪除後無法恢復)
+          確定要刪除
+          <span class="fw-bold text-danger">{{ coupon.code }}</span>
+          嗎？(刪除後無法恢復)
         </div>
         <div class="modal-footer">
           <button
@@ -45,16 +48,11 @@
 <script>
 import modalMixin from "@/mixins/modalMixin";
 export default {
-  data() {
-    return {
-      modal: {},
-    };
-  },
-  props: ["product"],
   mixins: [modalMixin],
+  props: ["coupon"],
   methods: {
     confirmDel() {
-      this.$emit("delProduct", this.product);
+      this.$emit("delCoupon", this.coupon.id);
     },
   },
 };
