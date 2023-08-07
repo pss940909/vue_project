@@ -25,6 +25,16 @@
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
           <li class="nav-item">
+            <router-link class="nav-link" to="/dashboard/productlist"
+              >產品管理</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/dashboard/orderlist"
+              >訂單管理</router-link
+            >
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="#" @click.prevent="logout">登出</a>
           </li>
         </ul>
