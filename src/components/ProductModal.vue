@@ -74,7 +74,7 @@
                   </button>
                 </div>
                 <div v-else-if="this.tempProduct.imagesUrl.length == 5">
-                  <small class="text-danger">最多限上傳6張照片</small>
+                  <small class="text-danger">最多限上傳5張產品副圖</small>
                 </div>
               </div>
             </div>

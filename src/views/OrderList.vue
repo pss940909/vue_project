@@ -1,4 +1,5 @@
 <template>
+  <vue-loading :active="isLoading"></vue-loading>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -29,3 +30,24 @@
     </tbody>
   </table>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+  methods: {
+    getOrderList(page = 1) {
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
+      this.axios.get(url).then((res) => {
+        console.log(res.data);
+      });
+    },
+  },
+  created() {
+    this.getOrderList();
+  },
+};
+</script>

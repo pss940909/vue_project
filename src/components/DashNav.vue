@@ -22,7 +22,7 @@
             >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/login">Login</router-link>
+            <router-link class="nav-link" to="/login">管理者登入</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/dashboard/productlist"
@@ -32,6 +32,11 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/dashboard/orderlist"
               >訂單管理</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/dashboard/couponlist"
+              >優惠卷管理</router-link
             >
           </li>
           <li class="nav-item">

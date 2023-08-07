@@ -36,8 +36,9 @@ export default {
     this.axios.defaults.headers.common["Authorization"] = token;
     const url = `${process.env.VUE_APP_API}/api/user/check`;
     this.axios.post(url).then((res) => {
+      // 未驗證身份 => 導回登入頁面
       if (!res.data.success) {
-        this.$router.back("/login");
+        this.$router.push("/login");
       }
     });
   },
