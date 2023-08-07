@@ -118,10 +118,11 @@ export default {
   },
   watch: {
     coupon: {
-      handler(newVal) {
-        this.tempCoupon = newVal;
-        this.tempCoupon.due_date = this.$filters.date(newVal);
+      handler() {
+        this.tempCoupon = this.coupon;
+        this.tempCoupon.due_date = this.$filters.date(this.coupon.due_date);
       },
+      deep: true,
     },
   },
   computed: {
